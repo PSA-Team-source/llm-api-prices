@@ -9,25 +9,17 @@ Text prices are $ per 1M input / output tokens. Every day's full table is in [`h
 
 From `GET https://api.uberllm.dev/api/v1/public/price-changes`. Text prices are $ per 1M input / output tokens.
 
-**Official list price changes (27)**
+**Official list price changes (18)**
 
 | Model | Category | Before | After | Change |
 |---|---|---|---|---|
-| [DeepSeek V4.1 Flash 1017](https://uberllm.dev/models/deepseek/deepseek-v4.1-flash-1017) | text | $0.30 / $1.20 | $0.006 / $0.50 | in −98% / out −58% |
-| [DeepSeek V4.1 Flash](https://uberllm.dev/models/deepseek/deepseek-v4.1-flash) | text | $0.045 / $0.50 | $0.006 / $0.50 | in −87% / out 0% |
 | [NVIDIA Nemotron 3 Super 120B](https://uberllm.dev/models/nvidia/nemotron-3-super-120b) | text | $0.30 / $2.40 | $0.075 / $0.40 | in −75% / out −83% |
-| [Gemma 4 26B A4B IT](https://uberllm.dev/models/google/gemma-4-26b-a4b-it) | text | $0.086 / $0.258 | $0.08 / $0.10 | in −7% / out −61% |
-| [GLM 5.3](https://uberllm.dev/models/z-ai/glm-5.3) | text | $0.08 / $3.60 | $0.0699 / $1.40 | in −13% / out −61% |
-| [DeepSeek V4 Pro](https://uberllm.dev/models/deepseek/deepseek-v4-pro) | text | $1.60 / $3.20 | $0.9553 / $1.91 | −40% |
 | [inclusionAI: Ling 3.1 Flash](https://uberllm.dev/models/inclusionai/ling-3.1-flash) | text | $0.075 / $0.225 | $0.045 / $0.135 | −40% |
 | [MiniMax M2.7](https://uberllm.dev/models/minimax/minimax-m2.7) | text | $0.30 / $1.20 | $0.21 / $0.84 | −30% |
-| [DeepSeek V4 Flash 0731](https://uberllm.dev/models/deepseek/deepseek-v4-flash-0731) | text | $0.059 / $0.26 | $0.0434 / $0.26 | in −26% / out 0% |
 | [Qwen3 Next 80B A3B](https://uberllm.dev/models/qwen/qwen3-next-80b-a3b-instruct) | text | $0.10 / $1.10 | $0.09 / $1.10 | in −10% / out 0% |
 | [NVIDIA: Nemotron 3.5 Super VL](https://uberllm.dev/models/nvidia/nemotron-3.5-super-vl) | text | $0.15 / $0.50 | $0.15 / $0.47 | in 0% / out −6% |
 | [Llama 3.2 3B](https://uberllm.dev/models/meta-llama/llama-3.2-3b-instruct) | text | $0.0509 / $0.335 | $0.05 / $0.33 | in −2% / out −1% |
 | [PixVerse C1 Text-to-Video (Venice)](https://uberllm.dev/models/venice/pixverse-c1-t2v) | video | $0.07 / sec | $0.07133 / sec | +2% |
-| [Kimi K3](https://uberllm.dev/models/moonshotai/kimi-k3) | text | $0.192 / $15.00 | $0.192 / $16.00 | in 0% / out +7% |
-| [DeepSeek V4 Pro 0813](https://uberllm.dev/models/deepseek/deepseek-v4-pro-0813) | text | $0.115 / $4.00 | $0.111 / $4.44 | in −3% / out +11% |
 | [MiniMax M2](https://uberllm.dev/models/minimax/minimax-m2) | text | $0.255 / $1.02 | $0.30 / $1.20 | +18% |
 | [Qwen 3.6 27B](https://uberllm.dev/models/qwen/qwen3.6-27b) | text | $0.325 / $2.70 | $0.32 / $3.20 | in −2% / out +19% |
 | [Qwen 3.5 397B](https://uberllm.dev/models/qwen/qwen3.5-397b-a17b) | text | $0.50 / $3.60 | $0.60 / $3.60 | in +20% / out 0% |
@@ -38,7 +30,6 @@ From `GET https://api.uberllm.dev/api/v1/public/price-changes`. Text prices are 
 | [Kimi K2.5 (Morpheus Web)](https://uberllm.dev/models/moonshotai/kimi-k2.5:web) | text | $0.50 / $2.50 | $0.532 / $3.33 | in +6% / out +33% |
 | [GLM 4.5 Air](https://uberllm.dev/models/z-ai/glm-4.5-air) | text | $0.13 / $0.85 | $0.20 / $1.10 | in +54% / out +29% |
 | [DeepSeek: DeepSeek V4 Flash Vision Exp](https://uberllm.dev/models/deepseek/deepseek-v4-flash-vision-exp) | text | $0.2156 / $0.6468 | $0.44 / $1.32 | +104% |
-| [Llama 3.3 70B Instruct](https://uberllm.dev/models/meta-llama/llama-3.3-70b-instruct) | text | $0.20 / $0.52 | $0.70 / $0.71 | in +250% / out +37% |
 | [GLM 5.3 Flash](https://uberllm.dev/models/z-ai/glm-5.3-flash) | text | $0.0285 / $0.0923 | $0.15 / $0.50 | in +426% / out +442% |
 
 **New models (4)**: [Claude Fable 5.2](https://uberllm.dev/models/anthropic/claude-fable-5.2), [Meta: Muse Ember](https://uberllm.dev/models/meta-llama/muse-ember), [Tencent: Hy4](https://uberllm.dev/models/tencent/hy4), [Tencent: Hy4 preview](https://uberllm.dev/models/tencent/hy4-preview)

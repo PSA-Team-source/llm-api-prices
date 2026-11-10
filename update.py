@@ -28,6 +28,8 @@ import io
 import json
 import logging
 import math
+import re
+import statistics
 import os
 import sys
 import time
@@ -41,23 +43,38 @@ BRANCH = os.environ.get("BRANCH", "main")
 UA = "llm-api-prices-updater/1.0 (+https://github.com/PSA-Team-source/llm-api-prices)"
 HERE = os.path.dirname(os.path.abspath(__file__))
 MOVE = 0.10  # an UberLLM price move this large (either way) goes in the changelog
+CATALOG_SRC = "UberLLM catalog list price"
+NO_PAGE = " (the catalog does not record the vendor page this price was read from)"
 
 # Where a model maker publishes its own API prices, to check a list price against.
 # Only pages that answered HTTP 200 when this list was written (2026-11-10).
 VENDOR_PAGES = {
-    "openai": "https://platform.openai.com/docs/pricing",
-    "anthropic": "https://docs.claude.com/en/docs/about-claude/pricing",
-    "google": "https://ai.google.dev/gemini-api/docs/pricing",
-    "deepseek": "https://api-docs.deepseek.com/quick_start/pricing",
-    "x-ai": "https://docs.x.ai/docs/models",
-    "mistralai": "https://mistral.ai/pricing",
-    "moonshotai": "https://platform.moonshot.ai/docs/pricing/chat",
+    "openai": "https://developers.openai.com/api/docs/pricing",
+    "anthropic": "https://platform.claude.com/docs/en/about-claude/pricing",
+    "google": "https://aistudio.google.com/docs/pricing",
+    "deepseek": "https://api-docs.deepseek.com/quick_start/pricing/",
+    "x-ai": "https://docs.x.ai/developers/models",
+    "mistralai": "https://mistral.ai/pricing/",
+    "moonshotai": "https://platform.kimi.ai/docs/pricing/chat",
     "z-ai": "https://docs.z.ai/guides/overview/pricing",
     "qwen": "https://www.alibabacloud.com/help/en/model-studio/models",
     "black-forest-labs": "https://bfl.ai/pricing",
-    "kling": "https://klingai.com/global/dev/pricing",
+    "kling": "https://kling.ai/dev/pricing",
     "fal-ai": "https://fal.ai/pricing",
     "elevenlabs": "https://elevenlabs.io/pricing/api",
+    "venice": "https://docs.venice.ai/overview/pricing",
+}
+
+# Official prices read by hand on the maker's own page. A row whose catalog price
+# still equals the value here cites that page and skips the sanity gate; once the
+# catalog moves, the entry no longer matches and the row is judged like any other.
+# Text: (input, output) per 1M tokens; media: (price per unit,).
+VERIFIED = {
+    "z-ai/glm-5": ((1.0, 3.2), "Z.ai", "https://docs.z.ai/guides/overview/pricing", "2026-11-10"),
+    "z-ai/glm-5.1": ((1.4, 4.4), "Z.ai", "https://docs.z.ai/guides/overview/pricing", "2026-11-10"),
+    "z-ai/glm-5.3-flash": ((0.15, 0.5), "Z.ai", "https://docs.z.ai/guides/overview/pricing", "2026-11-10"),
+    "z-ai/glm-5.3-flashx": ((0.37, 1.25), "Z.ai", "https://docs.z.ai/guides/overview/pricing", "2026-11-10"),
+    "venice/kokoro-tts": ((0.0035,), "Venice ($3.50 per 1M characters)", "https://docs.venice.ai/overview/pricing", "2026-11-10"),
 }
 
 CATEGORIES = ["text", "image", "video", "music", "speech", "transcription", "embedding", "other"]
@@ -69,6 +86,7 @@ FIELDS = [
     "uberllm_input_usd_per_mtok", "uberllm_output_usd_per_mtok", "uberllm_cache_read_usd_per_mtok",
     "pct_below_list_input", "pct_below_list_output",
     "list_usd_per_unit", "uberllm_usd_per_unit", "pct_below_list_unit",
+    "list_price_status", "list_price_review_reason",
     "list_price_source", "list_price_source_url", "list_price_checked",
     "vendor_pricing_page", "uberllm_page",
 ]
@@ -201,7 +219,7 @@ def build_rows(models, v1):
                     r.update(list_price_source=ref.get("source"), list_price_source_url=ref.get("url"),
                              list_price_checked=ref.get("checked"))
                 else:
-                    r.update(list_price_source="UberLLM catalog list price")
+                    r.update(list_price_source=CATALOG_SRC + NO_PAGE)
             rates = [
                 {"resolution": x.get("resolution") or "", "sound": bool(x.get("audio")),
                  "list_usd_per_second": clean(x.get("list_usd_per_second")),
@@ -225,8 +243,11 @@ def build_rows(models, v1):
                 pct_below_list_input=pct_below(now.get("input_usd_per_mtok"), li),
                 pct_below_list_output=pct_below(now.get("output_usd_per_mtok"), lo),
             )
-            if num(li) or num(lo):
-                r["list_price_source"] = m.get("list_source") or "UberLLM catalog list price"
+            ref = m.get("list_ref") or {}  # same shape as media_ref, if the API ever sends the maker's page for text
+            if (num(li) or num(lo)) and ref.get("url"):
+                r.update(list_price_source=ref.get("source"), list_price_source_url=ref.get("url"), list_price_checked=ref.get("checked"))
+            elif num(li) or num(lo):
+                r["list_price_source"] = (m.get("list_source") or CATALOG_SRC) + NO_PAGE
             hosts = [
                 {"name": p["name"], "input_usd_per_mtok": clean(p.get("input_usd_per_mtok")),
                  "output_usd_per_mtok": clean(p.get("output_usd_per_mtok"))}
@@ -236,6 +257,83 @@ def build_rows(models, v1):
                 r["list_price_hosts"] = hosts
         rows.append(r)
     rows.sort(key=lambda r: (CATEGORIES.index(r["category"]), r["id"]))
+    return gate(rows)
+
+
+def _family(mid):
+    """The same model under another listing: date suffix, :variant, e2ee- copy."""
+    mk, _, name = mid.split(":")[0].partition("/")
+    name = re.sub(r"^e2ee-", "", name)
+    return mk + "/" + re.sub(r"(-(\d{4}|p|preview|exp))+$", "", name)
+
+
+def gate(rows):
+    """Withhold official prices we cannot stand behind. A text list price is
+    suspect when its input is under 1/40 of its output, when its output:input
+    ratio is more than 3x off the median of the maker's other text models, or
+    when its input is more than 3x off the same model's other listings (date
+    suffix, :web, e2ee copy). A per-unit media list price is suspect when it is
+    more than 10x off the median of its category and unit. Suspect rows keep
+    the UberLLM price but lose the list price and every % below list, and get
+    list_price_status = "unverified" with the reason; the rest get "ok" (or
+    "none" when there is no official price at all)."""
+    def lst(r):
+        i, o = r["list_input_usd_per_mtok"], r["list_output_usd_per_mtok"]
+        return (i, o) if r["category"] == "text" and num(i) and num(o) and i > 0 and o > 0 else None
+
+    text = [r for r in rows if lst(r)]
+    ratios, fams = {}, {}
+    for r in text:
+        i, o = lst(r)
+        ratios.setdefault(r["maker"], []).append(o / i)
+        fams.setdefault(_family(r["id"]), []).append(r)
+    why = {}
+    for r in text:
+        i, o = lst(r)
+        if i < o / 40:
+            why.setdefault(r["id"], []).append("input list price is under 1/40 of output")
+        mr = ratios[r["maker"]]
+        if len(mr) >= 4:
+            med = statistics.median(mr)
+            if o / i > 3 * med or o / i < med / 3:
+                why.setdefault(r["id"], []).append(f"output:input ratio {o / i:.1f} vs {med:.1f} for the maker's other models")
+        sib = [lst(x)[0] for x in fams[_family(r["id"])] if x is not r]
+        if sib:
+            med = statistics.median(sib)
+            if i > 3 * med or i < med / 3:
+                why.setdefault(r["id"], []).append("input list price more than 3x off other listings of the same model")
+    for r in rows:
+        v = VERIFIED.get(r["id"])
+        cur = (r["list_input_usd_per_mtok"], r["list_output_usd_per_mtok"]) if r["unit"] == "1M tokens" else (r["list_usd_per_unit"],)
+        if v and tuple(cur) == v[0]:
+            why.pop(r["id"], None)
+            r.update(list_price_source=v[1], list_price_source_url=v[2], list_price_checked=v[3])
+            r["_verified"] = True
+    groups = {}
+    for r in rows:
+        if r["unit"] != "1M tokens" and num(r["list_usd_per_unit"]) and r["list_usd_per_unit"] > 0:
+            groups.setdefault((r["category"], r["unit"]), []).append(r["list_usd_per_unit"])
+    for r in rows:
+        g = groups.get((r["category"], r["unit"]), [])
+        v = r["list_usd_per_unit"]
+        if len(g) >= 3 and num(v) and v > 0:
+            med = statistics.median(g)
+            if (v > 10 * med or v < med / 10) and not r.get("_verified"):
+                why.setdefault(r["id"], []).append(f"more than 10x off the median {r['category']} price per {r['unit']}")
+    for r in rows:
+        r.pop("_verified", None)
+        if r["id"] in why:
+            for k in ("list_input_usd_per_mtok", "list_output_usd_per_mtok", "list_cache_read_usd_per_mtok", "list_usd_per_unit",
+                      "pct_below_list_input", "pct_below_list_output", "pct_below_list_unit"):
+                r[k] = None
+            for x in r.get("video_rates") or []:
+                x["list_usd_per_second"] = None
+            r.update(list_price_status="unverified", list_price_review_reason="; ".join(why[r["id"]]))
+        else:
+            has = any(num(r[k]) for k in ("list_input_usd_per_mtok", "list_output_usd_per_mtok", "list_usd_per_unit"))
+            r["list_price_status"] = "ok" if has else "none"
+            if not has:
+                r.update(list_price_source=None, list_price_source_url=None, list_price_checked=None)
     return rows
 
 
@@ -394,12 +492,15 @@ def changelog_entry(title, d, note=""):
     return "\n".join(out) + "\n"
 
 
-def week_rows(changes):
+def week_rows(changes, unverified=frozenset()):
     """The public weekly diff (GET /api/v1/public/price-changes) as rows for the
-    'this week' tables: (name, id, kind, what, before, after, change)."""
+    'this week' tables: (name, id, kind, what, before, after, change). Official
+    price changes of a model whose list price is under review are left out."""
     out = []
     for c in changes.get("changes") or []:
         if c.get("nsfw") or c.get("change") not in ("list", "price"):
+            continue
+        if c["change"] == "list" and c["model"] in unverified:
             continue
         b, a = c.get("before") or {}, c.get("after") or {}
         lst = c["change"] == "list"
@@ -421,13 +522,13 @@ def week_rows(changes):
     return out
 
 
-def seed_entry(changes):
+def seed_entry(changes, unverified=frozenset()):
     """First CHANGELOG entry, from UberLLM's own daily snapshots before this repo existed."""
     if not changes.get("from"):
         return ""
     lines = [f"## {changes['from']} to {changes['to']} (UberLLM daily catalog snapshots, before this repo started)", "",
              "From `GET https://api.uberllm.dev/api/v1/public/price-changes`. Text prices are $ per 1M input / output tokens.", ""]
-    wr = week_rows(changes)
+    wr = week_rows(changes, unverified)
     lst = sorted([w for w in wr if w[3] == "list"], key=lambda w: mag(w[6]))
     mv = sorted([w for w in wr if w[3] == "price" and abs(mag(w[6])) >= MOVE], key=lambda w: mag(w[6]))
     link = lambda w: f"[{w[0].replace('|', '/')}]({SITE}/models/{w[1]})"  # noqa: E731
@@ -547,7 +648,15 @@ def readme(rows, meta, changes):
                       table(["Model", "Official price", "UberLLM price", "Below list"],
                             [[md_link(r), price_cell(r, "list") or "–", price_cell(r, "uberllm"), pct_cell(r) or "–"] for r in t]), ""]
 
-    wr = week_rows(changes)
+    review = [r for r in rows if r["list_price_status"] == "unverified" and not r["nsfw"]]
+    if review:
+        parts += ["## Prices under review", "",
+                  f"The catalog's official price for these {len(review)} models failed a sanity check (see "
+                  "`list_price_review_reason`), so it is left out, with no % below list, until it is checked against the maker's own page. "
+                  "The UberLLM price is still listed.", "",
+                  table(["Model", "Category", "Why"], [[md_link(r), r["category"], r["list_price_review_reason"]] for r in review]), ""]
+
+    wr = week_rows(changes, {r["id"] for r in rows if r["list_price_status"] == "unverified"})
     if changes.get("from") and wr:
         span = f"{changes['from']} to {changes['to']}"
         lst = sorted([w for w in wr if w[3] == "list" and mag(w[6]) < 0], key=lambda w: mag(w[6]))[:10]
@@ -612,11 +721,16 @@ def readme(rows, meta, changes):
         "- `GET https://api.uberllm.dev/api/v1/public/price-changes`: the weekly diff used for \"Biggest drops this week\" and the first CHANGELOG entry.",
         "",
         "Official list price, per row:", "",
-        "- `list_price_source = \"UberLLM catalog list price\"`: the direct (list) price the catalog carries for the model, which is the model maker's "
+        "- `list_price_source` starting \"UberLLM catalog list price\": the direct (list) price the catalog carries for the model, meant to be the maker's "
         "own API price for first-party models (OpenAI, Anthropic, Google, ...) and the host's list price for open-weight models. "
-        "Check it against `vendor_pricing_page` and, for open-weight models, against `list_price_hosts`.",
+        "The public catalog does not record which vendor page that number was read from, so `list_price_source_url` is empty and the source says so. "
+        "`vendor_pricing_page` is the maker's pricing page to check it against (it is not where the number was read); for open-weight models, "
+        "`list_price_hosts` has the named hosts' own prices.",
         "- Any other `list_price_source` (for example `OpenRouter`, `Z.ai`, `Fal`, `Kling (Kuaishou)`, `Stability AI`): the catalog had no list of its own, so the "
         "price was read from that public page (`list_price_source_url`) on `list_price_checked`.",
+        "- `list_price_status`: `ok` = the official price passed the sanity check; `unverified` = it failed it (input under 1/40 of output, "
+        "an output:input ratio more than 3x off the maker's other models, an input more than 3x off other listings of the same model, or a media price "
+        "more than 10x off its category median), so the official price and every % below list are left empty until it is checked; `none` = no official price.",
         "- No official price: the field is empty. A media model whose only known official price is not above what UberLLM charges gets no official price, "
         "so a saving is never claimed against a number we cannot show.", "",
         "UberLLM price = the best offer a seller on the UberLLM market makes at snapshot time, fee included. Market prices move during the day; "
@@ -715,7 +829,7 @@ def build(prev_json, prev_changelog, today):
         log.info("diff: %d new, %d removed, %d list changes, %d UberLLM moves >= %d%%",
                  len(d["new"]), len(d["removed"]), len(d["list"]), len(d["moves"]), MOVE * 100)
     else:
-        entry = seed_entry(changes)
+        entry = seed_entry(changes, {r["id"] for r in rows if r["list_price_status"] == "unverified"})
     files = {
         "prices.json": json.dumps(out, indent=1, ensure_ascii=False) + "\n",
         "prices.csv": to_csv(rows),
@@ -742,11 +856,28 @@ def selftest():
     rows = build_rows([{"id": "a/m", **base}, {"id": "b/v", **vid}, {"id": "c/x", **adult}], {})
     assert [r["id"] for r in rows] == ["a/m", "b/v"], rows  # adult video is never listed
     t, v = rows
-    assert t["pct_below_list_input"] == 50.0 and t["list_price_source"] == "UberLLM catalog list price"
+    assert t["pct_below_list_input"] == 50.0 and t["list_price_source"] == CATALOG_SRC + NO_PAGE and t["list_price_status"] == "ok"
     assert v["list_usd_per_unit"] == 0.2 and v["list_price_source"] == "Fal" and v["pct_below_list_unit"] == 50.0
+    assert v["list_price_source_url"] == "https://fal.ai/x" and v["list_price_status"] == "ok"
+    # the sanity gate: $0.006 in / $0.50 out is not a price we can stand behind
+    tx = lambda mid, i, o: {"id": mid, **{**base, "list_input_usd_per_mtok": i, "list_output_usd_per_mtok": o}}  # noqa: E731
+    g = {r["id"]: r for r in build_rows([tx("d/v4-flash", 0.006, 0.5), tx("d/v4-flash-1017", 0.3, 1.2), tx("d/a", 1, 4), tx("d/b", 2, 8),
+                                         tx("d/c", 0.5, 2), tx("d/d", 1, 3)], {})}
+    bad = g["d/v4-flash"]
+    assert bad["list_price_status"] == "unverified" and "1/40" in bad["list_price_review_reason"]
+    assert bad["list_input_usd_per_mtok"] is None and bad["pct_below_list_input"] is None and bad["uberllm_input_usd_per_mtok"] == 0.5
+    assert g["d/v4-flash-1017"]["list_price_status"] == "unverified"  # 50x off its own other listing
+    assert all(g[k]["list_price_status"] == "ok" for k in ("d/a", "d/b", "d/c", "d/d"))
+    md = lambda mid, lp: {"id": mid, **{**vid, "media_ref": None, "media_price_now_usd": lp / 2, "media_list_usd": lp}}  # noqa: E731
+    gm = {r["id"]: r for r in build_rows([md("v/1", 0.1), md("v/2", 0.12), md("v/3", 0.08), md("v/4", 5.0)], {})}
+    assert gm["v/4"]["list_price_status"] == "unverified" and gm["v/4"]["pct_below_list_unit"] is None
+    assert gm["v/1"]["list_price_status"] == "ok" and gm["v/1"]["pct_below_list_unit"] == 50.0
+    kv = {r["id"]: r for r in build_rows([md("venice/kokoro-tts", 0.0035), md("v/1", 0.1), md("v/2", 0.12), md("v/3", 0.08)], {})}["venice/kokoro-tts"]
+    assert kv["list_price_status"] == "ok" and kv["list_price_source_url"].startswith("https://docs.venice.ai")
+    assert "Prices under review" in readme(list(g.values()), {"updated_at": "x"}, {})
     # a media list price not above ours is not claimed as official
     v2 = build_rows([{"id": "b/v", **{**vid, "media_ref": None}}], {})[0]
-    assert v2["list_usd_per_unit"] is None and v2["pct_below_list_unit"] is None
+    assert v2["list_usd_per_unit"] is None and v2["pct_below_list_unit"] is None and v2["list_price_status"] == "none"
     later = build_rows([{"id": "a/m", **{**base, "list_output_usd_per_mtok": 3.0, "price_now": {"input_usd_per_mtok": 0.1, "output_usd_per_mtok": 0.4}}},
                         {"id": "d/n", **base}], {})
     d = diff(rows, later)
