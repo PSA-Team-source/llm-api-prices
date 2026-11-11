@@ -5,6 +5,190 @@ Price changes between daily snapshots of [`prices.json`](prices.json), newest fi
 "UberLLM price" = the best live offer on the UberLLM market at snapshot time; it moves during the day.
 Text prices are $ per 1M input / output tokens. Every day's full table is in [`history/`](history/).
 
+## 2026-11-11 (vs 2026-11-10)
+
+**Official list price changes (13)**
+
+| Model | Category | Before | After | Change |
+|---|---|---|---|---|
+| [GLM 5.3 Flash](https://uberllm.dev/models/z-ai/glm-5.3-flash) | text | $0.15 / $0.50 | $0.0399 / $0.0784 | in −73% / out −84% |
+| [MiniMax M3.1 Flash](https://uberllm.dev/models/minimax/minimax-m3-1-flash) | text | $0.15 / $0.60 | $0.075 / $0.30 | −50% |
+| [Tencent HY3](https://uberllm.dev/models/tencent/hy3) | text | $0.132 / $0.528 | $0.0825 / $0.33 | −38% |
+| [Tencent: Hy4 preview](https://uberllm.dev/models/tencent/hy4-preview) | text | $0.834 / $2.50 | $0.7506 / $2.25 | −10% |
+| [DeepSeek V4 Pro](https://uberllm.dev/models/deepseek/deepseek-v4-pro) | text | – / – | $1.32 / $3.96 |  |
+| [DeepSeek V4 Pro 0813](https://uberllm.dev/models/deepseek/deepseek-v4-pro-0813) | text | – / – | $1.32 / $3.96 |  |
+| [DeepSeek V4 Pro (Morpheus Web)](https://uberllm.dev/models/deepseek/deepseek-v4-pro:web) | text | – / – | $1.32 / $3.96 |  |
+| [DeepSeek V4.1 Flash](https://uberllm.dev/models/deepseek/deepseek-v4.1-flash) | text | – / – | $0.30 / $1.20 |  |
+| [DeepSeek V4.1 Flash 1017](https://uberllm.dev/models/deepseek/deepseek-v4.1-flash-1017) | text | – / – | $0.30 / $1.20 |  |
+| [Kimi K3](https://uberllm.dev/models/moonshotai/kimi-k3) | text | – / – | $3.00 / $15.00 |  |
+| [GLM-5.2](https://uberllm.dev/models/z-ai/glm-5.2) | text | – / – | $1.40 / $4.40 |  |
+| [GLM 5.2 (Morpheus Web)](https://uberllm.dev/models/z-ai/glm-5.2:web) | text | – / – | $1.40 / $4.40 |  |
+| [GLM 5.3](https://uberllm.dev/models/z-ai/glm-5.3) | text | – / – | $1.40 / $4.40 |  |
+
+**New models (2)**
+
+| Model | Category | Official price | UberLLM price |
+|---|---|---|---|
+| [Google: Gemini 4 Carbon](https://uberllm.dev/models/google/gemini-4-carbon) | text | $2.00 / $10.00 | $1.00 / $5.00 |
+| [Inception: Mercury 2.5](https://uberllm.dev/models/inception/mercury-2.5) | text | – | $0.028 / $0.105 |
+
+**No longer listed (15)**: `meta-llama/hermes-3-llama-3.1-405b:web`, `meta-llama/llama-3.2-3b-instruct:web`, `meta-llama/llama-3.3-70b-instruct:web`, `minimax/minimax-m2.5:web`, `mistralai/mistral-small-3.2-24b-instruct:web`, `moonshotai/kimi-k2.5:web`, `moonshotai/kimi-k2.6:web`, `moonshotai/kimi-k2.7-code:web`, `openai/gpt-oss-120b:web`, `qwen/qwen3-235b-a22b-2507:web`, `qwen/qwen3-next-80b-a3b-instruct:web`, `z-ai/glm-5.1-non-thinking`, `z-ai/glm-5.1-non-thinking:web`, `z-ai/glm-5.1:web`, `z-ai/glm-5:web`
+
+<details><summary>UberLLM price moves of 10% or more (147)</summary>
+
+| Model | Category | Before | After | Change |
+|---|---|---|---|---|
+| [Aion 2.0](https://uberllm.dev/models/aion-labs/aion-2.0) | text | $0.64 / $1.28 | $0.008 / $0.016 | −99% |
+| [Aion 3.5 Mini](https://uberllm.dev/models/aion-labs/aion-3-5-mini) | text | $0.525 / $1.05 | $0.00875 / $0.0175 | −98% |
+| [Aion 3.0](https://uberllm.dev/models/aion-labs/aion-3-0) | text | $1.78 / $3.56 | $0.03 / $0.06 | −98% |
+| [Qwen3 32B](https://uberllm.dev/models/qwen/qwen3-32b) | text | $0.0104 / $0.0364 | $0.00079 / $0.002765 | −92% |
+| [Ministral 14B 3.0](https://uberllm.dev/models/mistralai/ministral-3-14b-instruct) | text | $0.026 / $0.026 | $0.001996 / $0.001996 | −92% |
+| [GPT OSS Safeguard 120B](https://uberllm.dev/models/openai/gpt-oss-safeguard-120b) | text | $0.0195 / $0.078 | $0.001497 / $0.005988 | −92% |
+| [DeepSeek V4 Flash](https://uberllm.dev/models/deepseek/deepseek-v4-flash) | text | $0.009091 / $0.01818 | $0.001044 / $0.002088 | −89% |
+| [DeepSeek V4 Flash 0731](https://uberllm.dev/models/deepseek/deepseek-v4-flash-0731) | text | $0.00212 / $0.0127 | $0.000901 / $0.001802 | in −57% / out −86% |
+| [MiniMax M2.7 Highspeed](https://uberllm.dev/models/minimax/minimax-m2.7-highspeed) | text | $0.174 / $0.696 | $0.03 / $0.12 | −83% |
+| [MiniMax M2.5](https://uberllm.dev/models/minimax/minimax-m2.5) | text | $0.0135 / $0.0475 | $0.002621 / $0.009222 | −81% |
+| [Aion 3.0 Mini](https://uberllm.dev/models/aion-labs/aion-3-0-mini) | text | $0.035 / $0.07 | $0.007 / $0.014 | −80% |
+| [Mistral Large 3](https://uberllm.dev/models/mistralai/mistral-large-3) | text | $0.02475 / $0.07425 | $0.005 / $0.015 | −80% |
+| [GPT-5.3 Codex](https://uberllm.dev/models/openai/gpt-5.3-codex) | text | $0.3871 / $3.10 | $0.1405 / $1.12 | −64% |
+| [Grok 4.7](https://uberllm.dev/models/x-ai/grok-4.7) | text | $0.03309 / $0.09928 | $0.01442 / $0.04326 | −56% |
+| [Grok 4.5](https://uberllm.dev/models/x-ai/grok-4.5) | text | $0.03564 / $0.1069 | $0.01557 / $0.04671 | −56% |
+| [Qwen 3 235B A22B Instruct 2507](https://uberllm.dev/models/qwen/qwen3-235b-a22b-2507) | text | $0.0014 / $0.0075 | $0.000633 / $0.003389 | −55% |
+| [Whisper Large V3 (Venice)](https://uberllm.dev/models/venice/whisper-large-v3) | transcription | $0.0033 / minute | $0.0015 / minute | −55% |
+| [Gemini 3.1 Flash Lite](https://uberllm.dev/models/google/gemini-3.1-flash-lite) | text | $0.00242 / $0.01452 | $0.001213 / $0.007275 | −50% |
+| [Meta: Muse Spark 1.1](https://uberllm.dev/models/meta-llama/muse-spark-1.1) | text | $0.7015 / $2.39 | $0.375 / $1.27 | −47% |
+| [Gemini 3.6 Flash](https://uberllm.dev/models/google/gemini-3-6-flash) | text | $0.3937 / $1.97 | $0.2175 / $1.09 | −45% |
+| [DeepSeek V4 Pro](https://uberllm.dev/models/deepseek/deepseek-v4-pro) | text | $0.001626 / $0.003252 | $0.000955 / $0.001911 | −41% |
+| [Gemini 2.5 Flash](https://uberllm.dev/models/google/gemini-2.5-flash) | text | $0.0024 / $0.02 | $0.0015 / $0.0125 | in −37% / out −38% |
+| [Claude Opus 4.7 Fast](https://uberllm.dev/models/anthropic/claude-opus-4.7-fast) | text | $27.00 / $135.00 | $18.00 / $90.00 | −33% |
+| [Meta: Muse Spark 1.3 Contributor](https://uberllm.dev/models/meta-llama/muse-spark-1.3-contributor) | text | $0.03 / $0.06 | $0.02 / $0.04 | −33% |
+| [Qwen 3 235B A22B Thinking 2507](https://uberllm.dev/models/qwen/qwen3-235b-a22b-thinking-2507) | text | $0.075 / $0.075 | $0.05 / $0.05 | −33% |
+| [Claude Opus 4.7](https://uberllm.dev/models/anthropic/claude-opus-4.7) | text | $0.2268 / $1.13 | $0.161 / $0.805 | −29% |
+| [Claude Sonnet 5.5](https://uberllm.dev/models/anthropic/claude-sonnet-5.5) | text | $0.139 / $0.6951 | $0.0995 / $0.4975 | −28% |
+| [Magistral Small 2509](https://uberllm.dev/models/mistralai/magistral-small-2509) | text | $0.00693 / $0.02079 | $0.00499 / $0.01497 | −28% |
+| [GLM 5.3 Flash](https://uberllm.dev/models/z-ai/glm-5.3-flash) | text | $0.001245 / $0.00415 | $0.001525 / $0.002996 | in +22% / out −28% |
+| [GPT-5.6 Terra Pro](https://uberllm.dev/models/openai/gpt-5.6-terra-pro) | text | $1.11 / $6.65 | $0.80 / $4.80 | −28% |
+| [Gemma 3 4B IT](https://uberllm.dev/models/google/gemma-3-4b-it) | text | $0.000463 / $0.000579 | $0.000346 / $0.000693 | in −25% / out +20% |
+| [GPT-5.6 Luna Pro](https://uberllm.dev/models/openai/gpt-5.6-luna-pro) | text | $0.1034 / $0.6202 | $0.08 / $0.48 | −23% |
+| [Tencent HY3](https://uberllm.dev/models/tencent/hy3) | text | $0.009441 / $0.03776 | $0.007431 / $0.02972 | −21% |
+| [MiniMax M3 Preview](https://uberllm.dev/models/minimax/minimax-m3-preview) | text | $0.1499 / $0.5998 | $0.12 / $0.48 | −20% |
+| [Tencent: Hy4 preview](https://uberllm.dev/models/tencent/hy4-preview) | text | $0.0676 / $0.2027 | $0.05411 / $0.1623 | −20% |
+| [Grok 4.6](https://uberllm.dev/models/x-ai/grok-4.6) | text | $0.1517 / $0.455 | $0.1217 / $0.3652 | −20% |
+| [Gemma 4 31B](https://uberllm.dev/models/google/gemma-4-31b) | text | $0.0009 / $0.0034 | $0.000912 / $0.002736 | in +1% / out −20% |
+| [Claude Opus 5 (Fast)](https://uberllm.dev/models/anthropic/claude-opus-5-fast) | text | $4.96 / $24.80 | $4.00 / $20.00 | −19% |
+| [Fireworks: Ember-1](https://uberllm.dev/models/fireworks/ember-1) | text | $2.57 / $12.86 | $2.10 / $10.49 | −18% |
+| [Sakana: Fugu Max](https://uberllm.dev/models/sakana/fugu-max) | text | $2.10 / $6.30 | $1.72 / $5.16 | −18% |
+| [MiniMax M3.1 Flash](https://uberllm.dev/models/minimax/minimax-m3-1-flash) | text | $0.008951 / $0.0358 | $0.007443 / $0.02977 | −17% |
+| [Qwen 3.5 9B](https://uberllm.dev/models/qwen/qwen3.5-9b) | text | $0.03 / $0.09 | $0.025 / $0.075 | −17% |
+| [Kokoro Text to Speech (Venice)](https://uberllm.dev/models/venice/kokoro-tts) | speech | $0.0021 / 1K chars | $0.00175 / 1K chars | −17% |
+| [GPT-5.6 Luna](https://uberllm.dev/models/openai/gpt-5.6-luna) | text | $0.00497 / $0.02982 | $0.004143 / $0.02486 | −17% |
+| [Grok Imagine — Edit (Venice)](https://uberllm.dev/models/venice/grok-imagine-edit) | image | $0.0147 / image | $0.01228 / image | −16% |
+| [Kimi K2.7 Code](https://uberllm.dev/models/moonshotai/kimi-k2.7-code) | text | $0.01151 / $0.06713 | $0.009788 / $0.0571 | −15% |
+| [Claude Opus 4.8](https://uberllm.dev/models/anthropic/claude-opus-4.8) | text | $0.337 / $1.69 | $0.29 / $1.45 | −14% |
+| [ByteDance Seed: Seed-2.0-Code](https://uberllm.dev/models/bytedance/seed-2.0-code) | text | $0.495 / $2.97 | $0.43 / $2.58 | −13% |
+| [Elorian: Glimpse](https://uberllm.dev/models/elorian/glimpse) | text | $0.594 / $2.97 | $0.516 / $2.58 | −13% |
+| [inclusionAI: Ling 3.1 Flash](https://uberllm.dev/models/inclusionai/ling-3.1-flash) | text | $0.04455 / $0.1336 | $0.0387 / $0.1161 | −13% |
+| [LiquidAI: LFM2.5-24B-A2B](https://uberllm.dev/models/liquid/lfm-2.5-24b-a2b) | text | $0.0495 / $0.693 | $0.043 / $0.602 | −13% |
+| [Qwen: Qwen3.8 Max Prime](https://uberllm.dev/models/qwen/qwen3.8-max-prime) | text | $3.96 / $11.88 | $3.44 / $10.32 | −13% |
+| [Sakana: Fugu Ultra v2](https://uberllm.dev/models/sakana/fugu-ultra-v2) | text | $4.95 / $29.70 | $4.30 / $25.80 | −13% |
+| [Pareto 26.9](https://uberllm.dev/models/unbiased/pareto-26.9) | text | $2.48 / $7.42 | $2.15 / $6.45 | −13% |
+| [Meta: Muse Glimmer 30B](https://uberllm.dev/models/meta-llama/muse-glimmer-30b) | text | $0.297 / $1.19 | $0.258 / $1.03 | −13% |
+| [Reflection: Beam 1.0 501B A23B](https://uberllm.dev/models/reflection/beam-1.0-501b-a23b) | text | $0.297 / $0.99 | $0.258 / $0.86 | −13% |
+| [JEV 1.14 (TypeSafe)](https://uberllm.dev/models/typesafe/jev-1.14) | other | $0.04158 / $0 | $0.03612 / $0 | in −13% / out – |
+| [Qwen3.8 Flash](https://uberllm.dev/models/qwen/qwen3.8-flash) | text | $0.001692 / $0.005301 | $0.00147 / $0.004606 | −13% |
+| [Meta: Muse Spark Open](https://uberllm.dev/models/meta-llama/muse-spark-open) | text | $0.6966 / $2.37 | $0.6162 / $2.10 | −12% |
+| [Claude Opus 5.5](https://uberllm.dev/models/anthropic/claude-opus-5.5) | text | $0.1703 / $0.8515 | $0.1517 / $0.7585 | −11% |
+| [Claude Haiku 4.5](https://uberllm.dev/models/anthropic/claude-haiku-4.5) | text | $0.0592 / $0.296 | $0.0653 / $0.3265 | +10% |
+| [GPT-5.4 Pro](https://uberllm.dev/models/openai/gpt-5.4-pro) | text | $4.35 / $26.07 | $4.79 / $28.76 | +10% |
+| [Grok Imagine (Venice)](https://uberllm.dev/models/venice/grok-imagine) | image | $0.018 / image | $0.02 / image | +11% |
+| [Claude Opus 4.5](https://uberllm.dev/models/anthropic/claude-opus-4.5) | text | $0.3549 / $1.77 | $0.40 / $2.00 | +13% |
+| [GPT-6 Luna Decisions (OpenAI)](https://uberllm.dev/models/openai/gpt-6-luna-decisions) | other | $0.06093 / $0 | $0.06878 / $0 | in +13% / out – |
+| [GPT Image 1.5 — Edit (Venice)](https://uberllm.dev/models/venice/gpt-image-1-5-edit) | image | $0.216 / image | $0.248 / image | +15% |
+| [Wan 2.7 (Venice)](https://uberllm.dev/models/venice/wan-2.7) | image | $0.02063 / image | $0.024 / image | +16% |
+| [Grok Imagine Image To Video Private (image-to-video)](https://uberllm.dev/models/x-ai/grok-imagine-image-to-video-private) | video | $0.036 / sec | $0.042 / sec | +17% |
+| [Grok Imagine Reference To Video Private (reference-to-video)](https://uberllm.dev/models/x-ai/grok-imagine-reference-to-video-private) | video | $0.036 / sec | $0.042 / sec | +17% |
+| [Chroma (Venice)](https://uberllm.dev/models/venice/chroma) | image | $0.005 / image | $0.006 / image | +20% |
+| [Tencent: Hy4](https://uberllm.dev/models/tencent/hy4) | text | $0.03642 / $0.1092 | $0.04375 / $0.1312 | +20% |
+| [Flux 2 Max (Venice)](https://uberllm.dev/models/venice/flux-2-max) | image | $0.0522 / image | $0.063 / image | +21% |
+| [Wan 2.7 (reference-to-video)](https://uberllm.dev/models/wan/wan-2-7-reference-to-video) | video | $0.066 / sec | $0.08 / sec | +21% |
+| [Seedance 2.0 Mini (reference-to-video)](https://uberllm.dev/models/bytedance/seedance-2-0-mini-reference-to-video) | video | $0.0264 / sec | $0.033 / sec | +25% |
+| [Kling V3 Turbo Standard (image-to-video)](https://uberllm.dev/models/kling/kling-v3-turbo-standard-image-to-video) | video | $0.07398 / sec | $0.09248 / sec | +25% |
+| [Pixverse V5.6 (image-to-video)](https://uberllm.dev/models/pixverse/pixverse-v5-6-image-to-video) | video | $0.1212 / sec | $0.1515 / sec | +25% |
+| [xAI v1 TTS](https://uberllm.dev/models/x-ai/tts-xai-v1) | speech | $0.01125 / 1K chars | $0.01406 / 1K chars | +25% |
+| [Meta: Muse Ember](https://uberllm.dev/models/meta-llama/muse-ember) | text | $0.055 / $0.275 | $0.07 / $0.35 | +27% |
+| [Grok Imagine Pro (Venice)](https://uberllm.dev/models/venice/grok-imagine-pro) | image | $0.03169 / image | $0.04069 / image | +28% |
+| [PixVerse C1 Text-to-Video (Venice)](https://uberllm.dev/models/venice/pixverse-c1-t2v) | video | $0.0428 / sec | $0.05707 / sec | +33% |
+| [fal.ai Wizper (STT)](https://uberllm.dev/models/fal-ai/fal-wizper) | transcription | $0.0036 / minute | $0.0048 / minute | +33% |
+| [Gemini Omni Flash (reference-to-video)](https://uberllm.dev/models/google/gemini-omni-flash-reference-to-video) | video | $0.0855 / sec | $0.114 / sec | +33% |
+| [Gemini 3.1 Flash TTS](https://uberllm.dev/models/google/tts-gemini-3-1-flash) | speech | $0.1125 / 1K chars | $0.15 / 1K chars | +33% |
+| [Luma Uni 1 Max (image-to-image)](https://uberllm.dev/models/luma/luma-uni-1-max-edit) | image | $0.078 / image | $0.104 / image | +33% |
+| [Longcat Distilled (image-to-video)](https://uberllm.dev/models/meituan/longcat-distilled-image-to-video) | video | $0.0108 / sec | $0.0144 / sec | +33% |
+| [Flux 1.1 (Venice, legacy)](https://uberllm.dev/models/venice/flux-1.1) | image | $0.006 / image | $0.008 / image | +33% |
+| [GPT Image 1.5 (Venice)](https://uberllm.dev/models/venice/gpt-image-1.5) | image | $0.156 / image | $0.208 / image | +33% |
+| [Hunyuan Image 3.0 (Venice)](https://uberllm.dev/models/venice/hunyuan-image-v3) | image | $0.054 / image | $0.072 / image | +33% |
+| [MiniMax Music 2.6 (Venice)](https://uberllm.dev/models/venice/minimax-music-v26) | music | $0.108 / track | $0.144 / track | +33% |
+| [Venice SD35](https://uberllm.dev/models/venice/sd35) | image | $0.006 / image | $0.008 / image | +33% |
+| [Stable Diffusion XL (Venice, legacy)](https://uberllm.dev/models/venice/sdxl) | image | $0.006 / image | $0.008 / image | +33% |
+| [Luma Uni 1 (image-to-image)](https://uberllm.dev/models/luma/luma-uni-1-edit) | image | $0.036 / image | $0.048 / image | +33% |
+| [Longcat (image-to-video)](https://uberllm.dev/models/meituan/longcat-image-to-video) | video | $0.03 / sec | $0.04 / sec | +33% |
+| [MiniMax Speech 02 HD TTS](https://uberllm.dev/models/minimax/tts-minimax-speech-02-hd) | speech | $0.075 / 1K chars | $0.10 / 1K chars | +33% |
+| [Ovi Image-to-Video](https://uberllm.dev/models/ovi/ovi-image-to-video) | video | $0.0264 / sec | $0.0352 / sec | +33% |
+| [Qwen Image 2 Pro (image-to-image)](https://uberllm.dev/models/qwen/qwen-image-2-pro-edit) | image | $0.06 / image | $0.08 / image | +33% |
+| [Chatterbox HD TTS](https://uberllm.dev/models/resemble-ai/tts-chatterbox-hd) | speech | $0.03 / 1K chars | $0.04 / 1K chars | +33% |
+| [ElevenLabs Turbo v2.5 TTS (Venice)](https://uberllm.dev/models/venice/elevenlabs-tts-turbo-v2-5) | speech | $0.0375 / 1K chars | $0.05 / 1K chars | +33% |
+| [Flux 1.1 Pro (Venice, legacy)](https://uberllm.dev/models/venice/flux-1.1-pro) | image | $0.018 / image | $0.024 / image | +33% |
+| [Qwen Image 2 Pro (Venice)](https://uberllm.dev/models/venice/qwen-image-2-pro) | image | $0.06 / image | $0.08 / image | +33% |
+| [Venice TTS 1 (legacy alias)](https://uberllm.dev/models/venice/tts-1) | speech | $0.0021 / 1K chars | $0.0028 / 1K chars | +33% |
+| [GPT-5.2](https://uberllm.dev/models/openai/gpt-5.2) | text | $0.1593 / $1.27 | $0.2151 / $1.72 | +35% |
+| [Seedance 2.0 Fast (image-to-video)](https://uberllm.dev/models/bytedance/seedance-2-0-fast-image-to-video) | video | $0.042 / sec | $0.059 / sec | +40% |
+| [Stable Audio 2.5 (Venice)](https://uberllm.dev/models/venice/stable-audio-25) | music | $0.108 / track | $0.152 / track | +41% |
+| [Orpheus TTS](https://uberllm.dev/models/canopy-labs/tts-orpheus) | speech | $0.03438 / 1K chars | $0.05 / 1K chars | +45% |
+| [Inworld 1.5 Max TTS](https://uberllm.dev/models/inworld/tts-inworld-1-5-max) | speech | $0.006875 / 1K chars | $0.01 / 1K chars | +45% |
+| [Qwen3 1.7B TTS](https://uberllm.dev/models/qwen/tts-qwen3-1-7b) | speech | $0.06187 / 1K chars | $0.09 / 1K chars | +45% |
+| [ElevenLabs Sound Effects v2 (Venice)](https://uberllm.dev/models/venice/elevenlabs-sound-effects-v2) | music | $0.011 / track | $0.016 / track | +45% |
+| [Qwen Image (Venice)](https://uberllm.dev/models/venice/qwen-image) | image | $0.0165 / image | $0.024 / image | +45% |
+| [Grok Imagine 1.5 Image To Video Private (image-to-video)](https://uberllm.dev/models/x-ai/grok-imagine-1-5-image-to-video-private) | video | $0.054 / sec | $0.0792 / sec | +47% |
+| [Seedance 2.0 (reference-to-video)](https://uberllm.dev/models/bytedance/seedance-2-0-reference-to-video) | video | $0.0528 / sec | $0.0792 / sec | +50% |
+| [ElevenLabs Scribe v2 (STT)](https://uberllm.dev/models/elevenlabs/elevenlabs-scribe-v2) | transcription | $0.00501 / minute | $0.008016 / minute | +60% |
+| [Veo 3.1 Fast Text-to-Video](https://uberllm.dev/models/google/veo3-1-fast-text-to-video) | video | $0.099 / sec | $0.1633 / sec | +65% |
+| [LongCat Distilled Text-to-Video](https://uberllm.dev/models/meituan/longcat-distilled-text-to-video) | video | $0.0108 / sec | $0.01782 / sec | +65% |
+| [Vidu Q3 Text-to-Video](https://uberllm.dev/models/vidu/vidu-q3-text-to-video) | video | $0.116 / sec | $0.1933 / sec | +67% |
+| [Veo3.1 Full (image-to-video)](https://uberllm.dev/models/google/veo3-1-full-image-to-video) | video | $0.264 / sec | $0.44 / sec | +67% |
+| [Veo 3.1 Full Text-to-Video](https://uberllm.dev/models/google/veo3-1-full-text-to-video) | video | $0.264 / sec | $0.44 / sec | +67% |
+| [Pixverse C1 (image-to-video)](https://uberllm.dev/models/pixverse/pixverse-c1-image-to-video) | video | $0.02598 / sec | $0.0433 / sec | +67% |
+| [Pixverse C1 Transition (transition)](https://uberllm.dev/models/pixverse/pixverse-c1-transition) | video | $0.02598 / sec | $0.0433 / sec | +67% |
+| [Veo3.1 Fast (image-to-video)](https://uberllm.dev/models/google/veo3-1-fast-image-to-video) | video | $0.099 / sec | $0.165 / sec | +67% |
+| [LongCat Text-to-Video](https://uberllm.dev/models/meituan/longcat-text-to-video) | video | $0.03 / sec | $0.05 / sec | +67% |
+| [PixVerse V5.6 Text-to-Video](https://uberllm.dev/models/pixverse/pixverse-v5-6-text-to-video) | video | $0.1368 / sec | $0.228 / sec | +67% |
+| [Pixverse V5.6 Transition (transition)](https://uberllm.dev/models/pixverse/pixverse-v5-6-transition) | video | $0.1212 / sec | $0.202 / sec | +67% |
+| [Runway Gen-4.5](https://uberllm.dev/models/runway/runway-gen4-5) | video | $0.096 / sec | $0.16 / sec | +67% |
+| [Venice Music Gen (legacy alias)](https://uberllm.dev/models/venice/music-gen) | music | $0.018 / track | $0.03 / track | +67% |
+| [Venice Video Gen (legacy alias)](https://uberllm.dev/models/venice/video-gen) | video | $0.096 / sec | $0.16 / sec | +67% |
+| [Wan 2.5 Preview (image-to-video)](https://uberllm.dev/models/wan/wan-2-5-preview-image-to-video) | video | $0.0336 / sec | $0.056 / sec | +67% |
+| [Qwen3 0.6B TTS](https://uberllm.dev/models/qwen/tts-qwen3-0-6b) | speech | $0.03938 / 1K chars | $0.07 / 1K chars | +78% |
+| [ElevenLabs TTS Multilingual v2 (Venice audio)](https://uberllm.dev/models/venice/elevenlabs-tts-multilingual-v2) | music | $0.054 / track | $0.096 / track | +78% |
+| [ElevenLabs TTS v3 (Venice audio)](https://uberllm.dev/models/venice/elevenlabs-tts-v3) | music | $0.054 / track | $0.096 / track | +78% |
+| [MiniMax Music 2.0 (Venice)](https://uberllm.dev/models/venice/minimax-music-v2) | music | $0.018 / track | $0.032 / track | +78% |
+| [MMAudio V2 Text-to-Audio (Venice)](https://uberllm.dev/models/venice/mmaudio-v2-text-to-audio) | music | $0.0045 / track | $0.008 / track | +78% |
+| [Pixverse C1 (reference-to-video)](https://uberllm.dev/models/pixverse/pixverse-c1-reference-to-video) | video | $0.02381 / sec | $0.0433 / sec | +82% |
+| [Vidu Q3 (image-to-video)](https://uberllm.dev/models/vidu/vidu-q3-image-to-video) | video | $0.0495 / sec | $0.09 / sec | +82% |
+| [Runway Gen-4 Turbo](https://uberllm.dev/models/runway/runway-gen4-turbo) | video | $0.03712 / sec | $0.0675 / sec | +82% |
+| [Runway Gen-4.5 Text-to-Video (Venice)](https://uberllm.dev/models/venice/runway-gen4-5-text) | video | $0.088 / sec | $0.16 / sec | +82% |
+| [GPT-5.5](https://uberllm.dev/models/openai/gpt-5.5) | text | $0.125 / $0.75 | $0.2445 / $1.47 | +96% |
+| [Gemma 4 26B A4B IT](https://uberllm.dev/models/google/gemma-4-26b-a4b-it) | text | $0.00038 / $0.00114 | $0.0008 / $0.001 | in +111% / out −12% |
+| [ACE-Step 1.5 (Venice)](https://uberllm.dev/models/venice/ace-step-15) | music | $0.0135 / track | $0.03 / track | +122% |
+| [Kimi K2.6](https://uberllm.dev/models/moonshotai/kimi-k2.6) | text | $0.008257 / $0.04332 | $0.01977 / $0.1037 | +139% |
+| [GPT-6 Luna](https://uberllm.dev/models/openai/gpt-6-luna) | text | $0.002956 / $0.01478 | $0.008695 / $0.04348 | +194% |
+| [Claude Fable 5.2](https://uberllm.dev/models/anthropic/claude-fable-5.2) | text | $0.7152 / $3.58 | $2.71 / $13.55 | +279% |
+| [ElevenLabs Music (Venice)](https://uberllm.dev/models/venice/elevenlabs-music) | music | $0.1725 / track | $0.6555 / track | +280% |
+| [Gemini 3.8 Flash](https://uberllm.dev/models/google/gemini-3.8-flash) | text | $0.000799 / $0.003995 | $0.003992 / $0.01996 | +400% |
+| [GPT OSS Safeguard 20B](https://uberllm.dev/models/openai/gpt-oss-safeguard-20b) | text | $0.000075 / $0.0003 | $0.000525 / $0.0021 | +600% |
+| [GPT-5.4](https://uberllm.dev/models/openai/gpt-5.4) | text | $0.0625 / $0.375 | $0.4753 / $2.85 | +660% |
+| [Seedream 4.5](https://uberllm.dev/models/bytedance/seedream-4.5) | image | $0.0004 / image | $0.024 / image | +5900% |
+
+</details>
+
+
 ## 2026-11-03 to 2026-11-10 (UberLLM daily catalog snapshots, before this repo started)
 
 From `GET https://api.uberllm.dev/api/v1/public/price-changes`. Text prices are $ per 1M input / output tokens.
