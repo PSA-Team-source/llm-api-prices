@@ -229,7 +229,19 @@ def build_rows(models, v1):
             if rates:
                 r["video_rates"] = rates
         else:
-            now = m.get("price_now") or {}
+            now = dict(m.get("price_now") or {})
+            # The UberLLM price is what a buyer can count on: per side, the higher of the board's
+            # best seller now and the catalog's listed price (min_*), the rule uberllm.dev uses
+            # (lib/market.ts priceHeld). The best seller does not take every request: on
+            # 2026-11-12 Claude Opus 5.5 read $0.136 / $0.68 on the board while buyers were billed
+            # about $1.20 / $6.00. When the listed side wins, the cached-input price is the
+            # listed route's own (GET /v1/models), never the board seller's.
+            lp = m.get("listed_price") or {}  # the catalog's own price, kept by fetch() before the board overrides price_now
+            mi, mo = lp.get("input_usd_per_mtok", m.get("min_input_usd_per_mtok")), lp.get("output_usd_per_mtok", m.get("min_output_usd_per_mtok"))
+            if now and num(mi) and num(mo) and (mi > (now.get("input_usd_per_mtok") or 0) or mo > (now.get("output_usd_per_mtok") or 0)):
+                now["input_usd_per_mtok"] = max(now.get("input_usd_per_mtok") or 0, mi)
+                now["output_usd_per_mtok"] = max(now.get("output_usd_per_mtok") or 0, mo)
+                now["cache_read_usd_per_mtok"] = lp.get("cache_read_usd_per_mtok", ((v1.get(m["id"]) or {}).get("pricing") or {}).get("cache_read_usd"))
             li, lo = m.get("list_input_usd_per_mtok"), m.get("list_output_usd_per_mtok")
             if not now and not num(li):
                 continue
@@ -346,7 +358,7 @@ def fetch():
     changes = http(f"{API}/api/v1/public/price-changes") or {}
     lm = live.get("models") or {}
     # The live board's fields win, exactly as uberllm.dev merges them (lib/market.ts mergeLive).
-    merged = [{**m, **lm.get(m["id"], {})} for m in models["models"]]
+    merged = [{**m, **lm.get(m["id"], {}), "listed_price": m.get("price_now")} for m in models["models"]]
     return merged, v1, changes
 
 
@@ -552,7 +564,7 @@ CHANGELOG_HEAD = """# Changelog
 
 Price changes between daily snapshots of [`prices.json`](prices.json), newest first.
 "Official list price" = the model maker's price as carried in the catalog (see [SOURCES](README.md#sources)).
-"UberLLM price" = the best live offer on the UberLLM market at snapshot time; it moves during the day.
+"UberLLM price" = what a buyer can count on at snapshot time (per side, the higher of the best live seller and the listed price); it moves during the day.
 Text prices are $ per 1M input / output tokens. Every day's full table is in [`history/`](history/).
 
 """
@@ -702,7 +714,7 @@ def readme(rows, meta, changes):
             ["`category`", "text, image, video, music, speech, transcription, embedding or other (from the output modality)"],
             ["`unit`", "`1M tokens` for token-priced models; otherwise what one unit price buys: `image`, `megapixel`, `second`, `job` (one video or track), `minute`, `1K characters`"],
             ["`list_input_usd_per_mtok`, `list_output_usd_per_mtok`", "Official list price, USD per 1M tokens"],
-            ["`uberllm_input_usd_per_mtok`, `uberllm_output_usd_per_mtok`", "Lowest live UberLLM price at snapshot time, USD per 1M tokens"],
+            ["`uberllm_input_usd_per_mtok`, `uberllm_output_usd_per_mtok`", "UberLLM price a buyer can count on at snapshot time, USD per 1M tokens: per side, the higher of the best live seller and the listed price"],
             ["`list_usd_per_unit`, `uberllm_usd_per_unit`", "The same for per-unit (media) prices"],
             ["`pct_below_list_*`", "100 × (1 − UberLLM / list), one decimal; negative = above list; empty = no list price"],
             ["`list_price_source`, `list_price_source_url`, `list_price_checked`", "Where the official price comes from (see Sources)"],
@@ -716,7 +728,7 @@ def readme(rows, meta, changes):
         "## Sources", "",
         "Every number comes from UberLLM's public catalog, read once a day by [`update.py`](update.py):", "",
         "- `GET https://api.uberllm.dev/api/v1/public/models`: model list, context length, capabilities, official list prices, UberLLM prices.",
-        "- `GET https://api.uberllm.dev/api/v1/public/market/live`: the live market board (refreshed every 30 s). Its prices win over the catalog's, as on uberllm.dev.",
+        "- `GET https://api.uberllm.dev/api/v1/public/market/live`: the live market board (refreshed every 30 s). The text price published here is, per side, the higher of its best seller and the catalog's listed price, as on uberllm.dev's comparison pages.",
         "- `GET https://api.uberllm.dev/v1/models`: the OpenAI-compatible model list (reasoning flag).",
         "- `GET https://api.uberllm.dev/api/v1/public/price-changes`: the weekly diff used for \"Biggest drops this week\" and the first CHANGELOG entry.",
         "",
@@ -858,6 +870,13 @@ def selftest():
     t, v = rows
     assert t["pct_below_list_input"] == 50.0 and t["list_price_source"] == CATALOG_SRC + NO_PAGE and t["list_price_status"] == "ok"
     assert v["list_usd_per_unit"] == 0.2 and v["list_price_source"] == "Fal" and v["pct_below_list_unit"] == 50.0
+    # the UberLLM text price is the higher of the board and the listed price, per side (2026-11-12, Opus 5.5)
+    op = build_rows([{"id": "a/opus", **{**base, "list_input_usd_per_mtok": 4.0, "list_output_usd_per_mtok": 20.0,
+                                         "price_now": {"input_usd_per_mtok": 0.136, "output_usd_per_mtok": 0.68, "cache_read_usd_per_mtok": 0.0068},
+                                         "min_input_usd_per_mtok": 1.2, "min_output_usd_per_mtok": 6.0}}],
+                    {"a/opus": {"pricing": {"cache_read_usd": 0.06}}})[0]
+    assert (op["uberllm_input_usd_per_mtok"], op["uberllm_output_usd_per_mtok"], op["uberllm_cache_read_usd_per_mtok"]) == (1.2, 6.0, 0.06), op
+    assert op["pct_below_list_input"] == 70.0, op
     assert v["list_price_source_url"] == "https://fal.ai/x" and v["list_price_status"] == "ok"
     # the sanity gate: $0.006 in / $0.50 out is not a price we can stand behind
     tx = lambda mid, i, o: {"id": mid, **{**base, "list_input_usd_per_mtok": i, "list_output_usd_per_mtok": o}}  # noqa: E731
